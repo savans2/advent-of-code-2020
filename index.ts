@@ -9,7 +9,6 @@ instructions.forEach(instruction => {
   const min = parseInt(minAndMax[0])  // 1
   const max = parseInt(minAndMax[1])  // 3
   const char = instructionAsArray[1].split(':')[0]; // "h"
-  const passwordAsString = instructionAsArray[2]; // "abcdh"
   const passwordAsArray = instructionAsArray[2].split(''); // ["a","b","c","d","h"]
 
   let charRepeatCount = 0;
