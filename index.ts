@@ -12,31 +12,31 @@ import { input } from './input'
 const validFields = [
   {
     name: 'byr',
-    required: true
+    required: true,
   },
   {
     name: 'iyr',
-    required: true
+    required: true,
   },
   {
     name: 'eyr',
-    required: true
+    required: true,
   },
   {
     name: 'hgt',
-    required: true
+    required: true,
   },
   {
     name: 'hcl',
-    required: true
+    required: true,
   },
   {
     name: 'ecl',
-    required: true
+    required: true,
   },
   {
     name: 'pid',
-    required: true
+    required: true,
   },
   {
     name: 'cid',
@@ -45,7 +45,6 @@ const validFields = [
 ];
 
 const splitInput = input.split('\n\n');
-let isValidCount = 0;
 
 const passports = splitInput.map(passport => passport.split('\n'));
 
@@ -71,10 +70,57 @@ let validPassportCount = 0;
 formattedPassports.forEach(passport => {
   let isPassportValid = true;
 
-  console.log(passport);
-
   validFields.forEach(field => {
-    if (passport[field.name] === undefined && field.required) isPassportValid = false;
+    if (field.required && passport[field.name] === undefined) isPassportValid = false;
+    else {
+
+      switch (field.name) {
+        case 'byr':
+          if (passport[field.name].length < 4) isPassportValid = false;
+          if (parseInt(passport[field.name]) < 1920) isPassportValid = false;
+          if (parseInt(passport[field.name]) > 2002) isPassportValid = false;
+          break;
+        case 'iyr':
+          if (passport[field.name].length < 4) isPassportValid = false;
+          if (parseInt(passport[field.name]) < 2010) isPassportValid = false;
+          if (parseInt(passport[field.name]) > 2020) isPassportValid = false;
+          break;
+        case 'eyr':
+          if (passport[field.name].length < 4) isPassportValid = false;
+          if (parseInt(passport[field.name]) < 2020) isPassportValid = false;
+          if (parseInt(passport[field.name]) > 2030) isPassportValid = false;
+          break;
+        case 'hgt':
+          const value = parseInt(passport[field.name]);
+          const metric = passport[field.name].includes('cm') ? 'cm' : 'in'
+          if (metric === 'cm') {
+            if (value < 150) isPassportValid = false;
+            if (value > 193) isPassportValid = false;
+          } else {
+            if (value < 50) isPassportValid = false;
+            if (value > 76) isPassportValid = false;
+          }
+          break;
+        case 'hcl':
+          const validColorChars = ["a", "b", "c", "d", "e", "f", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+          const color = passport[field.name].split('');
+
+          if (color.length < 7 || color.length > 7) isPassportValid = false;
+          if (color[0] !== '#') isPassportValid = false;
+          color.forEach((char, i) => {
+            if (i !== 0)
+              if (validColorChars.indexOf(char) === -1) isPassportValid = false;
+          });
+          break;
+        case 'ecl':
+          const validEyeColor = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
+          if (validEyeColor.indexOf(passport[field.name]) === -1) isPassportValid = false;
+          break;
+        case 'pid':
+          if (passport[field.name].length < 9 || passport[field.name].length > 9) isPassportValid = false;
+          break;
+      }
+    }
   })
 
   if (isPassportValid) validPassportCount++;
